@@ -11,10 +11,7 @@ use static_cell::StaticCell;
 
 use crate::{
     channels::MQTT_STATUS,
-    config::{
-        self, MQTT_PASS, MQTT_TOPIC_BASE, MQTT_TOPIC_INPUT, MQTT_TOPIC_POWER, MQTT_TOPIC_VOLUME,
-        MQTT_USER,
-    },
+    config::{self, MQTT_PASS, MQTT_TOPIC_BASE, MQTT_USER},
 };
 
 static RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();

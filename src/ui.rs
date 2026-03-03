@@ -113,12 +113,7 @@ pub async fn worker(
 
         let now = embassy_time::Instant::now();
 
-        if new_state.power != last_state.power
-            || new_state.wifi_ok != last_state.wifi_ok
-            || new_state.mqtt_ok != last_state.mqtt_ok
-            || new_state.volume != last_state.volume
-            || new_state.input != last_state.input
-        {
+        if new_state != last_state {
             last_significant_change = now;
             last_state = new_state;
             rerender = true;
@@ -172,6 +167,8 @@ pub async fn worker(
         }
 
         // Wait a short while before checking for more readings for other threads to do work.
+        // c6 in particular is single threaded so it's particularly important here (do you want
+        // the display to update or the wifi to remain connected pick one just one)
         Timer::after_millis(250).await;
     }
 }
