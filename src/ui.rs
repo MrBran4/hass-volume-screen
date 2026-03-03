@@ -7,7 +7,7 @@ use esp_hal::{
     ledc::{self, LowSpeed, channel::ChannelIFace},
     spi::master::SpiDmaBus,
 };
-use mipidsi::{interface::SpiInterface, models::ST7789};
+use mipidsi::{interface::SpiInterface, models::GC9A01};
 use u8g2_fonts::types::HorizontalAlignment;
 
 use crate::{
@@ -33,7 +33,7 @@ type Display = mipidsi::Display<
         ExclusiveDevice<SpiDmaBus<'static, Blocking>, Output<'static>, esp_hal::delay::Delay>,
         Output<'static>,
     >,
-    ST7789,
+    GC9A01,
     Output<'static>,
 >;
 
@@ -171,14 +171,14 @@ pub async fn worker(
 }
 
 async fn play_startup_spinner(display: &mut Display) {
-    let spinner_frame_1 = Image::new(&SPINNER_1, (81, 251).into());
-    let spinner_frame_2 = Image::new(&SPINNER_2, (81, 251).into());
-    let spinner_frame_3 = Image::new(&SPINNER_3, (81, 251).into());
-    let spinner_frame_4 = Image::new(&SPINNER_4, (81, 251).into());
-    let spinner_frame_5 = Image::new(&SPINNER_5, (81, 251).into());
-    let spinner_frame_6 = Image::new(&SPINNER_6, (81, 251).into());
-    let spinner_frame_7 = Image::new(&SPINNER_7, (81, 251).into());
-    let spinner_frame_8 = Image::new(&SPINNER_8, (81, 251).into());
+    let spinner_frame_1 = Image::new(&SPINNER_1, (115, 165).into());
+    let spinner_frame_2 = Image::new(&SPINNER_2, (115, 165).into());
+    let spinner_frame_3 = Image::new(&SPINNER_3, (115, 165).into());
+    let spinner_frame_4 = Image::new(&SPINNER_4, (115, 165).into());
+    let spinner_frame_5 = Image::new(&SPINNER_5, (115, 165).into());
+    let spinner_frame_6 = Image::new(&SPINNER_6, (115, 165).into());
+    let spinner_frame_7 = Image::new(&SPINNER_7, (115, 165).into());
+    let spinner_frame_8 = Image::new(&SPINNER_8, (115, 165).into());
 
     _ = spinner_frame_1.draw(display);
     Timer::after_millis(100).await;

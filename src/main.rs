@@ -84,24 +84,24 @@ async fn main(spawner: Spawner) {
     .unwrap();
 
     let spi = spi
-        .with_sck(p.GPIO7)
-        .with_mosi(p.GPIO6)
+        .with_sck(p.GPIO4)
+        .with_mosi(p.GPIO5)
         .with_dma(dma_channel)
         .with_buffers(rx_buf, tx_buf);
 
-    let cs_output = Output::new(p.GPIO14, Level::High, OutputConfig::default());
+    let cs_output = Output::new(p.GPIO7, Level::High, OutputConfig::default());
     let spi_delay = Delay::new();
     let spi_device = ExclusiveDevice::new(spi, cs_output, spi_delay).unwrap();
 
-    let lcd_dc = Output::new(p.GPIO15, Level::Low, OutputConfig::default());
+    let lcd_dc = Output::new(p.GPIO6, Level::Low, OutputConfig::default());
     let buffer: &'static mut [u8; 512] = Box::leak(Box::new([0_u8; 512]));
     let di = mipidsi::interface::SpiInterface::new(spi_device, lcd_dc, buffer);
 
     let mut display_delay = Delay::new();
     display_delay.delay_micros(500);
 
-    let reset = Output::new(p.GPIO21, Level::Low, OutputConfig::default());
-    let display = mipidsi::Builder::new(mipidsi::models::ST7789, di)
+    let reset = Output::new(p.GPIO10, Level::Low, OutputConfig::default());
+    let display = mipidsi::Builder::new(mipidsi::models::GC9A01, di)
         .reset_pin(reset)
         .display_size(DISPLAY_WIDTH as u16, DISPLAY_HEIGHT as u16)
         .display_offset(34, 0)
