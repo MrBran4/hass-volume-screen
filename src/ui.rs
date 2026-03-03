@@ -262,7 +262,7 @@ async fn render_current_state(
     }
 
     // Draw a black circle over the previous readings
-    drawables::draw_circle(display, (140, 140).into(), 176).await;
+    drawables::draw_circle(display, (120, 120).into(), 176).await;
 
     // Draw the new percentage
     drawables::draw_percentage(

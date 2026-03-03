@@ -11,7 +11,10 @@ use static_cell::StaticCell;
 
 use crate::{
     channels::MQTT_STATUS,
-    config::{self, MQTT_PASS, MQTT_TOPIC_BASE, MQTT_USER},
+    config::{
+        self, MQTT_PASS, MQTT_TOPIC_BASE, MQTT_TOPIC_INPUT, MQTT_TOPIC_POWER, MQTT_TOPIC_VOLUME,
+        MQTT_USER,
+    },
 };
 
 static RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
@@ -131,15 +134,12 @@ pub async fn worker(stack: Stack<'static>) {
 
         // Subscribe to config topics
         if let Err(code) = client.subscribe_to_topic(MQTT_TOPIC_BASE).await {
-            error!(
-                "[MQTT] Couldn't subscribe to command topic. Continuing but won't respect HA commands ({})",
-                code
-            );
+            error!("[MQTT] Couldn't subscribe to state topic ({})", code);
         }
 
         loop {
             // Wait for a new reading, up to 1s and then send a ping otherwise.
-            match select(client.receive_message(), Timer::after_secs(1)).await {
+            match select(client.receive_message(), Timer::after_secs(2)).await {
                 Either::First(r) => {
                     if let Err(MqttError::Fatal) = receive_commands::process_incoming(r).await {
                         break;
