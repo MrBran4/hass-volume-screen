@@ -113,7 +113,12 @@ pub async fn worker(
 
         let now = embassy_time::Instant::now();
 
-        if new_state != last_state {
+        if new_state.power != last_state.power
+            || new_state.wifi_ok != last_state.wifi_ok
+            || new_state.mqtt_ok != last_state.mqtt_ok
+            || new_state.volume != last_state.volume
+            || new_state.input != last_state.input
+        {
             last_significant_change = now;
             last_state = new_state;
             rerender = true;
@@ -121,15 +126,16 @@ pub async fn worker(
 
         // Backlight brightness is on for 5s after a change, or, permanently if there's no wifi or mqtt.
         let display_brightness = match (
+            &last_state.power,
             (now - last_significant_change).as_secs(),
             last_state.wifi_ok,
             last_state.mqtt_ok,
         ) {
-            // Changed in the last 5s -> On at 75%
-            (..=5, _, _) => 75,
-
             // Either wifi or mqtt erroring,  -> on at 25%
-            (_, false, _) | (_, _, false) => 25,
+            (_, _, false, _) | (_, _, _, false) => 25,
+
+            // On + changed in the last 5s -> On at 75%
+            (wxa50::Power::On, ..=5, _, _) => 75,
 
             // Otherwise off
             _ => 0,
